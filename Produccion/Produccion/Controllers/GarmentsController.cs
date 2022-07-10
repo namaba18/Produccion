@@ -2,20 +2,21 @@
 using Microsoft.EntityFrameworkCore;
 using Produccion.Data;
 using Produccion.Data.Entities;
+using Produccion.Models;
 
 namespace Produccion.Controllers
 {
-    public class FabricsController : Controller
+    public class GarmentsController : Controller
     {
         private readonly DataContext _context;
-        public FabricsController(DataContext context)
+        public GarmentsController(DataContext context)
         {
             _context = context;
-
         }
+
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Fabrics.ToListAsync());
+            return View(await _context.Garments.ToListAsync());
         }
 
         public IActionResult Create()
@@ -25,38 +26,38 @@ namespace Produccion.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Fabric fabric)
+        public async Task<IActionResult> Create(Garment garment)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(fabric);
+                _context.Add(garment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(fabric);
+            return View(garment);
         }
-
 
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Fabrics == null)
+            if (id == null || _context.Garments == null)
             {
                 return NotFound();
             }
 
-            Fabric fabric = await _context.Fabrics.FindAsync(id);
-            if (fabric == null)
+            Garment garment = await _context.Garments.FindAsync(id);
+            if (garment == null)
             {
                 return NotFound();
             }
-            return View(fabric);
+
+            return View(garment);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Fabric fabric)
+        public async Task<IActionResult> Edit(int id, Garment garment)
         {
-            if (id != fabric.Id)
+            if (id != garment.Id)
             {
                 return NotFound();
             }
@@ -65,12 +66,13 @@ namespace Produccion.Controllers
             {
                 try
                 {
-                    _context.Update(fabric);
+                                                       
+                    _context.Update(garment);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!FabricExists(fabric.Id))
+                    if (!GarmentExists(garment.Id))
                     {
                         return NotFound();
                     }
@@ -81,47 +83,46 @@ namespace Produccion.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(fabric);
+            return View(garment);
         }
-
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Fabrics == null)
+            if (id == null || _context.Garments == null)
             {
                 return NotFound();
             }
 
-            var color = await _context.Fabrics
+            Garment garment = await _context.Garments
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (color == null)
+            if (garment == null)
             {
                 return NotFound();
             }
 
-            return View(color);
+            return View(garment);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Fabrics == null)
+            if (_context.Garments == null)
             {
                 return Problem("Entity set 'DataContext.Fabrics'  is null.");
             }
-            Fabric fabric = await _context.Fabrics.FindAsync(id);
-            if (fabric != null)
+            Garment garment = await _context.Garments.FindAsync(id);
+            if (garment != null)
             {
-                _context.Fabrics.Remove(fabric);
+                _context.Garments.Remove(garment);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
-        private bool FabricExists(int id)
+        private bool GarmentExists(int id)
         {
-            return (_context.Fabrics?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Garments?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
+    
 }

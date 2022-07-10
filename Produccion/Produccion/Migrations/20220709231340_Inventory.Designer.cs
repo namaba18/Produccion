@@ -11,8 +11,8 @@ using Produccion.Data;
 namespace Produccion.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220708214551_RawMaterial")]
-    partial class RawMaterial
+    [Migration("20220709231340_Inventory")]
+    partial class Inventory
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,15 +36,7 @@ namespace Produccion.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("RawMaterialId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("Nombre")
-                        .IsUnique();
-
-                    b.HasIndex("RawMaterialId");
 
                     b.ToTable("Colors");
                 });
@@ -62,6 +54,45 @@ namespace Produccion.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.HasKey("Id");
+
+                    b.ToTable("Fabrics");
+                });
+
+            modelBuilder.Entity("Produccion.Data.Entities.Garment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<float>("ConsumoInvUnd")
+                        .HasColumnType("real");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Garments");
+                });
+
+            modelBuilder.Entity("Produccion.Data.Entities.Inventory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<float>("Cantidad")
+                        .HasColumnType("real");
+
+                    b.Property<int>("Consecutivo")
+                        .HasColumnType("int");
+
                     b.Property<int>("RawMaterialId")
                         .HasColumnType("int");
 
@@ -69,7 +100,7 @@ namespace Produccion.Migrations
 
                     b.HasIndex("RawMaterialId");
 
-                    b.ToTable("Fabrics");
+                    b.ToTable("Inventories");
                 });
 
             modelBuilder.Entity("Produccion.Data.Entities.RawMaterial", b =>
@@ -80,6 +111,12 @@ namespace Produccion.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("ColorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FabricId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -87,24 +124,17 @@ namespace Produccion.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ColorId");
+
+                    b.HasIndex("FabricId");
+
                     b.ToTable("RawMaterials");
                 });
 
-            modelBuilder.Entity("Produccion.Data.Entities.Color", b =>
+            modelBuilder.Entity("Produccion.Data.Entities.Inventory", b =>
                 {
                     b.HasOne("Produccion.Data.Entities.RawMaterial", "RawMaterial")
-                        .WithMany("Colors")
-                        .HasForeignKey("RawMaterialId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("RawMaterial");
-                });
-
-            modelBuilder.Entity("Produccion.Data.Entities.Fabric", b =>
-                {
-                    b.HasOne("Produccion.Data.Entities.RawMaterial", "RawMaterial")
-                        .WithMany("Fabrics")
+                        .WithMany("Inventory")
                         .HasForeignKey("RawMaterialId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -114,9 +144,36 @@ namespace Produccion.Migrations
 
             modelBuilder.Entity("Produccion.Data.Entities.RawMaterial", b =>
                 {
-                    b.Navigation("Colors");
+                    b.HasOne("Produccion.Data.Entities.Color", "Color")
+                        .WithMany("RawMaterials")
+                        .HasForeignKey("ColorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Fabrics");
+                    b.HasOne("Produccion.Data.Entities.Fabric", "Fabric")
+                        .WithMany("RawMaterials")
+                        .HasForeignKey("FabricId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Color");
+
+                    b.Navigation("Fabric");
+                });
+
+            modelBuilder.Entity("Produccion.Data.Entities.Color", b =>
+                {
+                    b.Navigation("RawMaterials");
+                });
+
+            modelBuilder.Entity("Produccion.Data.Entities.Fabric", b =>
+                {
+                    b.Navigation("RawMaterials");
+                });
+
+            modelBuilder.Entity("Produccion.Data.Entities.RawMaterial", b =>
+                {
+                    b.Navigation("Inventory");
                 });
 #pragma warning restore 612, 618
         }

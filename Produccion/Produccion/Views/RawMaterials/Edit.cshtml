@@ -1,4 +1,4 @@
-﻿@model Produccion.Data.Entities.RawMaterial
+﻿@model Produccion.Models.RawMaterialViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -12,24 +12,7 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
-                <br/>
-            </div>
-            <div class="form-group">
-                <label asp-for="Fabrics" class="control-label"></label>
-                <input asp-for="Fabrics" class="form-control" />
-                <span asp-validation-for="Fabrics" class="text-danger"></span>
-                <br/>
-            </div>
-            <div class="form-group">
-                <label asp-for="Colors" class="control-label"></label>
-                <input asp-for="Colors" class="form-control" />
-                <span asp-validation-for="Colors" class="text-danger"></span>
-                <br/>
-            </div>
+            <partial name="_RawMaterial" />
             <div class="form-group">
                 <input type="submit" value="Guardar" class="btn btn-primary" />
             </div>

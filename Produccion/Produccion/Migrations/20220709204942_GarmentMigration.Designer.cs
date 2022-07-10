@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Produccion.Data;
 
@@ -10,9 +11,10 @@ using Produccion.Data;
 namespace Produccion.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220709204942_GarmentMigration")]
+    partial class GarmentMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,53 +79,6 @@ namespace Produccion.Migrations
                     b.ToTable("Garments");
                 });
 
-            modelBuilder.Entity("Produccion.Data.Entities.Inventory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<float>("Cantidad")
-                        .HasColumnType("real");
-
-                    b.Property<int>("RawMaterialId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RawMaterialId");
-
-                    b.ToTable("Inventories");
-                });
-
-            modelBuilder.Entity("Produccion.Data.Entities.ProductionOrder", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("GarmentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RawMaterialId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Unidades")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GarmentId");
-
-                    b.HasIndex("RawMaterialId");
-
-                    b.ToTable("ProductionOrders");
-                });
-
             modelBuilder.Entity("Produccion.Data.Entities.RawMaterial", b =>
                 {
                     b.Property<int>("Id")
@@ -150,36 +105,6 @@ namespace Produccion.Migrations
                     b.HasIndex("FabricId");
 
                     b.ToTable("RawMaterials");
-                });
-
-            modelBuilder.Entity("Produccion.Data.Entities.Inventory", b =>
-                {
-                    b.HasOne("Produccion.Data.Entities.RawMaterial", "RawMaterial")
-                        .WithMany("Inventory")
-                        .HasForeignKey("RawMaterialId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("RawMaterial");
-                });
-
-            modelBuilder.Entity("Produccion.Data.Entities.ProductionOrder", b =>
-                {
-                    b.HasOne("Produccion.Data.Entities.Garment", "Garment")
-                        .WithMany("ProductionOrders")
-                        .HasForeignKey("GarmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Produccion.Data.Entities.RawMaterial", "RawMaterial")
-                        .WithMany("ProductionOrders")
-                        .HasForeignKey("RawMaterialId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Garment");
-
-                    b.Navigation("RawMaterial");
                 });
 
             modelBuilder.Entity("Produccion.Data.Entities.RawMaterial", b =>
@@ -209,18 +134,6 @@ namespace Produccion.Migrations
             modelBuilder.Entity("Produccion.Data.Entities.Fabric", b =>
                 {
                     b.Navigation("RawMaterials");
-                });
-
-            modelBuilder.Entity("Produccion.Data.Entities.Garment", b =>
-                {
-                    b.Navigation("ProductionOrders");
-                });
-
-            modelBuilder.Entity("Produccion.Data.Entities.RawMaterial", b =>
-                {
-                    b.Navigation("Inventory");
-
-                    b.Navigation("ProductionOrders");
                 });
 #pragma warning restore 612, 618
         }

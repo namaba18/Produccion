@@ -10,6 +10,6 @@ namespace Produccion.Data.Entities
         [MaxLength(50)]
         [Required(ErrorMessage ="El campo {0} es obligatorio")]
         public string Nombre { get; set; }
-        public RawMaterial RawMaterial { get; set; }
+        public IEnumerable<RawMaterial>? RawMaterials { get; set; }
     }
 }

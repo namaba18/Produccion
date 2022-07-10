@@ -1,0 +1,13 @@
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace Produccion.Helpers
+{
+    public interface ICombosHelper
+    {
+        Task<IEnumerable<SelectListItem>> GetComboColorsAsync();
+        Task<IEnumerable<SelectListItem>> GetComboFabricsAsync();
+        Task<IEnumerable<SelectListItem>> GetComboRawMaterialsAsync();
+        Task<IEnumerable<SelectListItem>> GetComboGarmentsAsync();
+
+    }
+}

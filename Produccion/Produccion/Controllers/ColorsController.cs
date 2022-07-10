@@ -16,9 +16,8 @@ namespace Produccion.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return _context.Colors != null ?
-                        View(await _context.Colors.ToListAsync()) :
-                        Problem("Entity set 'DataContext.Colors'  is null.");
+            return View(await _context.Colors
+                .ToListAsync());  
         }
 
         public IActionResult Create()

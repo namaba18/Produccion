@@ -11,8 +11,14 @@ namespace Produccion.Data.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string Nombre { get; set; }
 
-        public IEnumerable<Fabric> Fabrics { get; set; }
-        public IEnumerable<Color> Colors { get; set; }
+        [Display(Name = "Tela")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public Fabric Fabric { get; set; }
+        [Display(Name = "Color")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public Color Color { get; set; }
+        public IEnumerable<Inventory> Inventory { get; set; }
+        public IEnumerable<ProductionOrder> ProductionOrders { get; set; }
         
 
     }
