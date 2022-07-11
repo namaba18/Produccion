@@ -1,17 +1,27 @@
-﻿@model Produccion.Models.InventoryViewModel
+﻿@model Produccion.Models.ProductionOrderViewModel
 
 @{
-    ViewData["Title"] = "AddInventory";
+    ViewData["Title"] = "Create";
 }
 
-<h1>Agregar Inventario</h1>
+<h1>Agregar una nueva orden de producción</h1>
 
 
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="AddInventory">
+        <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Colors"/>
+            <input type="hidden" asp-for="Fabrics"/>
+            <input type="hidden" asp-for="RawMaterials"/>
+
+            <div class="form-group">
+                <label asp-for="Unidades" class="control-label"></label>
+                <input asp-for="Unidades" class="form-control" />
+                <span asp-validation-for="Unidades" class="text-danger"></span>
+                <br/>
+            </div>
             <div class="form-group">
                 <label asp-for="ColorId" class="control-label"></label>
                 <select asp-for="ColorId" asp-items="Model.Colors" class="form-control"></select>
@@ -28,12 +38,10 @@
                 <span asp-validation-for="RawMaterialId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Cantidad" class="control-label"></label>
-                <input asp-for="Cantidad" type="number" step="0.01" class="form-control" />
-                <span asp-validation-for="Cantidad" class="text-danger"></span>
-                <br/>
+                <label asp-for="GarmentId" class="control-label"></label>
+                <select asp-for="GarmentId" asp-items="Model.Garments" class="form-control"></select>
+                <span asp-validation-for="GarmentId" class="text-danger"></span>
             </div>
-
             <div class="form-group">
                 <input type="submit" value="Agregar" class="btn btn-primary" />
             </div>
@@ -59,6 +67,7 @@
                 data: { colorId: $("#ColorId").val() },
                 success: function(rawMaterials) { 
                     $.each(rawMaterials, function (i, rawMaterial) {
+                        debugger;
                         $("#RawMaterialId").append('<option value="'
                             + rawMaterial.id + '">'
                             + rawMaterial.nombre + '</option>');
@@ -72,5 +81,4 @@
         })
     });
     </script>
- }
-
+}

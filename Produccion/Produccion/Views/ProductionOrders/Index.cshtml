@@ -1,13 +1,13 @@
-﻿@model IEnumerable<Produccion.Data.Entities.Inventory>
+﻿@model IEnumerable<Produccion.Data.Entities.ProductionOrder>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Inventario</h1>
+<h1>Ordenes de producción</h1>
 
 <p>
-    <a asp-action="AddInventory">Agregar Inventario</a>
+    <a asp-action="Create">Agregar nueva orden</a>
 </p>
 <table class="table">
     <thead>
@@ -16,7 +16,7 @@
                 @Html.DisplayNameFor(model => model.Id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RawMaterial)
+                @Html.DisplayNameFor(model => model.RawMaterial.Nombre)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.RawMaterial.Fabric)
@@ -25,10 +25,10 @@
                 @Html.DisplayNameFor(model => model.RawMaterial.Color)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Cantidad)
+                @Html.DisplayNameFor(model => model.Garment.Nombre)
             </th>
             <th>
-                Unidades
+                @Html.DisplayNameFor(model => model.Unidades)
             </th>
             <th></th>
         </tr>
@@ -49,12 +49,11 @@
                 @Html.DisplayFor(modelItem => item.RawMaterial.Color.Nombre)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Cantidad)
+                @Html.DisplayFor(modelItem => item.Garment.Nombre)
             </td>
             <td>
-                Mts
+                @Html.DisplayFor(modelItem => item.Unidades)
             </td>
-
         </tr>
 }
     </tbody>

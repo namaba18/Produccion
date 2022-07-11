@@ -6,7 +6,7 @@ namespace Produccion.Helpers
     {
         Task<IEnumerable<SelectListItem>> GetComboColorsAsync();
         Task<IEnumerable<SelectListItem>> GetComboFabricsAsync();
-        Task<IEnumerable<SelectListItem>> GetComboRawMaterialsAsync();
+        Task<IEnumerable<SelectListItem>> GetComboRawMaterialsAsync(int colorId);
         Task<IEnumerable<SelectListItem>> GetComboGarmentsAsync();
 
     }

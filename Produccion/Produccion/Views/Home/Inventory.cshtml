@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Produccion.Data.Entities.Inventory>
+﻿@model Produccion.Data.Entities.Inventory
 
 @{
     ViewData["Title"] = "Index";
@@ -6,9 +6,6 @@
 
 <h1>Inventario</h1>
 
-<p>
-    <a asp-action="AddInventory">Agregar Inventario</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -34,28 +31,27 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Id)
+                @Html.DisplayFor(model => model.Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.RawMaterial.Nombre)
+                @Html.DisplayFor(model => model.RawMaterial.Nombre)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.RawMaterial.Fabric.Nombre)
+                @Html.DisplayFor(model => model.RawMaterial.Fabric.Nombre)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.RawMaterial.Color.Nombre)
+                @Html.DisplayFor(model => model.RawMaterial.Color.Nombre)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Cantidad)
+                @Html.DisplayFor(model => model.Cantidad)
             </td>
             <td>
                 Mts
             </td>
 
         </tr>
-}
+
     </tbody>
 </table>

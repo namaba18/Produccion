@@ -8,6 +8,7 @@ namespace Produccion.Data.Entities
         public int Id { get; set; }
 
         [Display(Name = "Unidades")]
+        [Required]
         public int Unidades { get; set; }
 
         [Display(Name = "Prenda")]

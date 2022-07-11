@@ -6,7 +6,7 @@ namespace Produccion.Data.Entities
     {
         public int Id { get; set; }
 
-        [Display (Name ="Nombre") ]
+        [Display (Name ="Prenda") ]
         [Required]
         public string Nombre { get; set; }
 
@@ -15,6 +15,6 @@ namespace Produccion.Data.Entities
         [DisplayFormat(DataFormatString = "{0:N2}")]
         public float ConsumoInvUnd { get; set; }
 
-        public IEnumerable<ProductionOrder> ProductionOrders { get; set; }
+        public ICollection<ProductionOrder> ProductionOrders { get; set; }
     }
 }

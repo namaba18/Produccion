@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Produccion.Data.Entities
 {
@@ -13,12 +14,14 @@ namespace Produccion.Data.Entities
 
         [Display(Name = "Tela")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        [JsonIgnore]
         public Fabric Fabric { get; set; }
         [Display(Name = "Color")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        [JsonIgnore]
         public Color Color { get; set; }
-        public IEnumerable<Inventory> Inventory { get; set; }
-        public IEnumerable<ProductionOrder> ProductionOrders { get; set; }
+        public ICollection<Inventory> Inventory { get; set; }
+        public ICollection<ProductionOrder> ProductionOrders { get; set; }
         
 
     }

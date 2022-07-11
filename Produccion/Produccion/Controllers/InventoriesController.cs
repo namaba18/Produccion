@@ -22,6 +22,9 @@ namespace Produccion.Controllers
         {
             return View(await _context.Inventories
                 .Include(i => i.RawMaterial)
+                .ThenInclude(r => r.Fabric)
+                .Include(i => i.RawMaterial)
+                .ThenInclude(r => r.Color)
                 .ToListAsync());
         }
 
@@ -29,8 +32,10 @@ namespace Produccion.Controllers
         {
             InventoryViewModel model = new()
             {
-                RawMaterials = await _combosHelper.GetComboRawMaterialsAsync(),
-                Cantidad = 0,
+                Colors = await _combosHelper.GetComboColorsAsync(),
+                Fabrics = await _combosHelper.GetComboFabricsAsync(),
+                RawMaterials = await _combosHelper.GetComboRawMaterialsAsync(0),
+                Cantidad = 0
             };
             return View(model);
         }
@@ -44,15 +49,34 @@ namespace Produccion.Controllers
             {
                 Inventory inventory = new()
                 {
-                    RawMaterial = await _context.RawMaterials.FindAsync(model.RawMaterialId),
-                    Cantidad = model.Cantidad,
+                    RawMaterial = await _context.RawMaterials
+                    .Include(r => r.Color)
+                    .Include(r => r.Fabric)
+                    .FirstOrDefaultAsync(r => r.Id == model.RawMaterialId),
+                    Cantidad = model.Cantidad
                 };
                 _context.Add(inventory);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            model.RawMaterials = await _combosHelper.GetComboRawMaterialsAsync();
+            model.RawMaterials = await _combosHelper.GetComboRawMaterialsAsync(0);
             return View(model);
         }
+        public JsonResult GetRawMaterial(int colorId)
+        {
+            Color color = _context.Colors
+                .Include(c => c.RawMaterials)
+                .FirstOrDefault(c => c.Id == colorId);
+            
+            if (color == null)
+            {
+                return null;
+            }
+
+            return Json(color.RawMaterials.OrderBy(d => d.Nombre));
+        }
+
+        
+
     }
 }

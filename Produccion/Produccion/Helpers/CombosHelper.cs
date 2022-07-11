@@ -18,7 +18,7 @@ namespace Produccion.Helpers
             List<SelectListItem> list = await _context.Colors.Select(x => new SelectListItem
             {
                 Text = x.Nombre,
-                Value = $"{x.Id}"
+                Value = x.Id.ToString(),
             })
                 .OrderBy(x => x.Text)
                 .ToListAsync();
@@ -37,7 +37,7 @@ namespace Produccion.Helpers
             List<SelectListItem> list = await _context.Fabrics.Select(x => new SelectListItem
             {
                 Text = x.Nombre,
-                Value = $"{x.Id}"
+                Value = x.Id.ToString()
             })
                 .OrderBy(x => x.Text)
                 .ToListAsync();
@@ -51,30 +51,30 @@ namespace Produccion.Helpers
             return list;
         }
 
-        public async Task<IEnumerable<SelectListItem>> GetComboRawMaterialsAsync()
+        public async Task<IEnumerable<SelectListItem>> GetComboRawMaterialsAsync(int colorId)
         {
-            List<SelectListItem> list = await _context.RawMaterials.Select(x => new SelectListItem
             {
-                Text = x.Nombre,
-                Value = $"{x.Id}"
-            })
-                .OrderBy(x => x.Text)
-                .ToListAsync();
+                List<SelectListItem> list = await _context.RawMaterials
+                    .Where(r => r.Color.Id == colorId)
+                    .Select(c => new SelectListItem
+                    {
+                        Text = c.Nombre,
+                        Value = c.Id.ToString(),
+                    })
+                    .OrderBy(c => c.Text)
+                    .ToListAsync();
 
-            list.Insert(0, new SelectListItem
-            {
-                Text = "[Seleccione una materia prima...]",
-                Value = "0"
-            });
+                list.Insert(0, new SelectListItem { Text = "[Seleccione una Materia Prima...]", Value = "0" });
 
-            return list;
+                return list;
+            }
         }
         public async Task<IEnumerable<SelectListItem>> GetComboGarmentsAsync()
         {
             List<SelectListItem> list = await _context.Garments.Select(x => new SelectListItem
             {
                 Text = x.Nombre,
-                Value = $"{x.Id}"
+                Value = x.Id.ToString(),
             })
                 .OrderBy(x => x.Text)
                 .ToListAsync();
