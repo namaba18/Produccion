@@ -72,6 +72,19 @@ namespace Produccion.Controllers
             model.Garments = await _combosHelper.GetComboGarmentsAsync();
             return View(model);
         }
+        public JsonResult GetRawMaterialColor(int colorId)
+        {
+            Color color = _context.Colors
+                .Include(c => c.RawMaterials)
+                .FirstOrDefault(c => c.Id == colorId);
 
+            if (color == null)
+            {
+                return null;
+            }
+
+            return Json(color.RawMaterials.OrderBy(d => d.Nombre));
+        }
+        
     }
 }

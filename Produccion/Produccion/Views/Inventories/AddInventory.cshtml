@@ -36,14 +36,12 @@
 
             <div class="form-group">
                 <input type="submit" value="Agregar" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-success">Regresar</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Regresar</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
@@ -54,7 +52,7 @@
             $("#RawMaterialId").append('<option value="0">[Selecciona un material...]</option>');
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("GetRawMaterial")',
+                url: '@Url.Action("GetRawMaterialColor")',
                 dataType: 'json',
                 data: { colorId: $("#ColorId").val() },
                 success: function(rawMaterials) { 
@@ -70,6 +68,7 @@
             });
             return false;
         })
+       
     });
     </script>
  }

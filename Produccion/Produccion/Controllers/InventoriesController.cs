@@ -62,7 +62,7 @@ namespace Produccion.Controllers
             model.RawMaterials = await _combosHelper.GetComboRawMaterialsAsync(0);
             return View(model);
         }
-        public JsonResult GetRawMaterial(int colorId)
+        public JsonResult GetRawMaterialColor(int colorId)
         {
             Color color = _context.Colors
                 .Include(c => c.RawMaterials)
