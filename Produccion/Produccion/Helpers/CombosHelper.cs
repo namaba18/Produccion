@@ -69,6 +69,23 @@ namespace Produccion.Helpers
                 return list;
             }
         }
+        public async Task<IEnumerable<SelectListItem>> GetComboRawMaterialsAsync()
+        {
+            {
+                List<SelectListItem> list = await _context.RawMaterials
+                    .Select(c => new SelectListItem
+                    {
+                        Text = c.Nombre,
+                        Value = c.Id.ToString(),
+                    })
+                    .OrderBy(c => c.Text)
+                    .ToListAsync();
+
+                list.Insert(0, new SelectListItem { Text = "[Seleccione una Materia Prima...]", Value = "0" });
+
+                return list;
+            }
+        }
         public async Task<IEnumerable<SelectListItem>> GetComboGarmentsAsync()
         {
             List<SelectListItem> list = await _context.Garments.Select(x => new SelectListItem

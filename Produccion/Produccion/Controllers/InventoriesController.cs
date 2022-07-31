@@ -25,6 +25,7 @@ namespace Produccion.Controllers
                 .ThenInclude(r => r.Fabric)
                 .Include(i => i.RawMaterial)
                 .ThenInclude(r => r.Color)
+                .OrderBy(i => i.Id)
                 .ToListAsync());
         }
 

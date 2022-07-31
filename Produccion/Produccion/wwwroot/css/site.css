@@ -20,3 +20,22 @@ body {
 div {
     margin-top: 5px;
 }
+
+.module{
+    padding: 10px;
+    position: relative;
+    width: 49.5%;
+    border: 1px dashed;
+    float: left;
+    border-radius:5px;
+    margin-left:3px;
+    margin-right:3px;
+
+}
+
+.module h4{
+    
+    margin:0;
+    padding: 0;
+    border:none;
+}

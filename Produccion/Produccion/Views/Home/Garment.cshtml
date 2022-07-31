@@ -1,0 +1,48 @@
+﻿@model IEnumerable<Produccion.Data.Entities.Garment>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Prendas producidas</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                Unidades producidas
+            </th>
+            <th>
+                Color
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model) {
+            @foreach (var item2 in item.ProductionOrders)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item2.Garment.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item2.Garment.Nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item2.GarmentNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item2.RawMaterial.Color.Nombre)
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

@@ -16,5 +16,7 @@ namespace Produccion.Data.Entities
 
         [Display(Name = "Materia Prima")]
         public RawMaterial RawMaterial { get; set; }
+
+        public int GarmentNumber => Unidades == null ? 0 : Unidades++;
     }
 }
