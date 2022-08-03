@@ -4,10 +4,10 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Inventario</h1>
+<h1><i class="fa-solid fa-cart-flatbed"></i> Inventario</h1>
 
 <p>
-    <a asp-action="AddInventory" class="btn btn-outline-primary" style="float:right">Agregar Inventario</a>
+    <a asp-action="AddInventory" class="btn btn-dark mb-2" style="float:right ">Agregar Inventario <i class="fa-solid fa-circle-plus"></i> </a>
 </p>
 <table class="table">
     <thead>
@@ -30,11 +30,11 @@
             <th>
                 Unidades
             </th>
-            <th></th>
+            
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Id)
@@ -54,7 +54,6 @@
             <td>
                 Mts
             </td>
-
         </tr>
 }
     </tbody>

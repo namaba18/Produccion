@@ -4,10 +4,10 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Telas</h1>
+<h1><i class="fa-solid fa-toilet-paper"></i> Telas</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-outline-primary" style="float:right">Agregar Tipo de Tela</a>
+    <a asp-action="Create" class="btn btn-dark mb-2" style="float:right">Agregar Tipo de Tela <i class="fa-solid fa-circle-plus"></i></a>
 </p>
 <table class="table">
     <thead>
@@ -25,8 +25,8 @@
                 @Html.DisplayFor(modelItem => item.Nombre)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Borrar</a>
+                <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pen-to-square text-dark"></i></a> |
+                <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash-can text-dark"></i></a>
             </td>
         </tr>
 }

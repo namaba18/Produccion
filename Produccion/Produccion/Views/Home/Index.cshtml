@@ -1,18 +1,20 @@
 ﻿@model Produccion.Models.HomeViewModel
 
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Sistema de Poducción";
+    
 }
 
-<div class="text-center">
-    <h1 class="display-4">Sistema de producción</h1>
-    <h5>Empresa textil.</h5>
+<div class="head">
+    <h1 class="display-4 fw-bold">Sistema de Producción</h1>
+    <h5>Empresa Textil.</h5>
 </div>
 
-<hr />
-<div  class="module">
+<hr class="separador"/>
+
+<div  class="module one">
     <div>
-        <h4 style="text-align:center">Módulo de consulta de inventario de materia prima</h4>
+        <h4 style="text-align:center">Módulo de consulta de Inventario por Materia Prima</h4>
         <form asp-action="Inventory">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -20,16 +22,16 @@
                 <select asp-for="RawMaterialId" asp-items="Model.RawMaterials" class="form-control"></select>
                 <span asp-validation-for="RawMaterialId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Consultar inventario" class="btn btn-outline-dark mt-2" />
+            <div class="form-group text-center">
+                <input type="submit" value="Consultar inventario" class="btn btn-dark mt-2" />
             </div>
         </form>
     </div>
 </div>
 
-<div class="module" >
+<div class="module two"  >
     <div>
-        <h4 style="text-align:center">Módulo de consulta de prendas producidas</h4>
+        <h4 style="text-align:center">Módulo de consulta de Prendas Producidas</h4>
         <form asp-action="Garment">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -37,8 +39,8 @@
                 <select asp-for="FabricId" asp-items="Model.Fabrics" class="form-control"></select>
                 <span asp-validation-for="FabricId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Consultar prendas" class="btn btn-outline-dark mt-2" />
+            <div class="form-group text-center">
+                <input type="submit" value="Consultar prendas" class="btn btn-dark mt-2" />
             </div>
         </form>
     </div>
