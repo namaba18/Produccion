@@ -12,7 +12,7 @@ namespace Produccion.Models
         [Display(Name = "Color")]
         public int ColorId { get; set; }
         public IEnumerable<SelectListItem>? Colors { get; set; }
-        [Display(Name = "Tela")]
+        [Display(Name = "Tipo de Tela")]
         public int FabricId { get; set; }
         public IEnumerable<SelectListItem>? Fabrics { get; set; }
 

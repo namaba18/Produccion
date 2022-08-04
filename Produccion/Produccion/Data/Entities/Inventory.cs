@@ -12,6 +12,11 @@ namespace Produccion.Data.Entities
         [DisplayFormat(DataFormatString = "{0:N2}")]
         public float Cantidad { get; set; }
 
+        [Display(Name = "Existencia")]
+        [Required]
+        [DisplayFormat(DataFormatString = "{0:N2}")]
+        public float Existencia { get; set; }
+
         [Display(Name = "Materia Prima")]
         [Required]
         public RawMaterial RawMaterial { get; set; }

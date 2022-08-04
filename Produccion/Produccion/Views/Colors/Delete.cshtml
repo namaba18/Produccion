@@ -6,8 +6,8 @@
 
 <h1>Borrar color</h1>
 
-<h3>¿Está seguro de querer borrar este color?</h3>
-<div>
+<h3 class="text-light">¿Está seguro de querer borrar este color?</h3>
+<div class="text-light">
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -21,6 +21,6 @@
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
         <input type="submit" value="Borrar" class="btn btn-danger" /> 
-        <a asp-action="Index" class="btn btn-success">Regresar</a>
+        <a asp-action="Index" class="btn btn-dark">Regresar</a>
     </form>
 </div>

@@ -1,0 +1,57 @@
+﻿@model IEnumerable<Produccion.Data.Entities.Inventory>
+
+@{
+    ViewData["Title"] = "Detalles";
+}
+
+<h1><i class="fa-solid fa-cart-flatbed"></i> Registro de inventarios</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Consecutivo
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RawMaterial.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RawMaterial.Fabric)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RawMaterial.Color)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cantidad) 
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Existencia) 
+            </th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model){
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RawMaterial.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RawMaterial.Fabric.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RawMaterial.Color.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cantidad) m
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Existencia) m
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

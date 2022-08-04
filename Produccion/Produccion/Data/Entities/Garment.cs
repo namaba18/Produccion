@@ -15,6 +15,6 @@ namespace Produccion.Data.Entities
         [DisplayFormat(DataFormatString = "{0:N2}")]
         public float ConsumoInvUnd { get; set; }
 
-        public ICollection<ProductionOrder> ProductionOrders { get; set; }
+        public ICollection<ProductionOrder>? ProductionOrders { get; set; }
     }
 }

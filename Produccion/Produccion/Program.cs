@@ -11,8 +11,23 @@ builder.Services.AddDbContext<DataContext>(o =>
 });
 
 builder.Services.AddScoped<ICombosHelper, CombosHelper>();
+builder.Services.AddTransient<SeedDb>();
 
-var app = builder.Build();
+WebApplication? app = builder.Build();
+
+SeedData(app);
+
+void SeedData(WebApplication app)
+{
+    IServiceScopeFactory? scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+
+    using (IServiceScope? scope = scopedFactory.CreateScope())
+    {
+        SeedDb? service = scope.ServiceProvider.GetService<SeedDb>();
+        service.SeedAsync().Wait();
+    }
+}
+
 
 if (!app.Environment.IsDevelopment())
 {

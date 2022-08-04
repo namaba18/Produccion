@@ -67,18 +67,9 @@ select {
     background: transparent;
 }
 
-table{
-    background-color: #ffffff;
-    
-}
-
 h1 {
     color: white;
 }
-tr:nth-child(even) {
-    background-color: #f8f8f8;
-}
-
 .privacy {
     color: white;
     background-color: #00000077;
@@ -88,4 +79,7 @@ tr:nth-child(even) {
     opacity:0.8;
     border-top: 5px double white;
     background-color:transparent;
-} 
+}
+.boton{
+    text-align: right;
+}

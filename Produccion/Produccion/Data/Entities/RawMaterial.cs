@@ -20,7 +20,8 @@ namespace Produccion.Data.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         [JsonIgnore]
         public Color Color { get; set; }
-        public ICollection<Inventory> Inventory { get; set; }
+
+        public ICollection<Inventory> Inventories { get; set; }
         public ICollection<ProductionOrder> ProductionOrders { get; set; }
         
 

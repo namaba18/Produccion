@@ -8,14 +8,14 @@
 
 
 <hr />
-<div class="row">
+<div class="row text-light">
     <div class="col-md-8">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <partial name="_RawMaterial"/>
-            <div class="form-group">
-                <input type="submit" value="Agregar" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-success" >Regresar</a>
+            <div class="form-group mt-2">
+                <input type="submit" value="Agregar" class="btn btn-dark" />
+                <a asp-action="Index" class="btn btn-dark" >Regresar</a>
             </div>
         </form>
     </div>

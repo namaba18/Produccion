@@ -7,7 +7,7 @@
 <h1>Editar color</h1>
 
 <hr />
-<div class="row">
+<div class="row text-light">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -18,8 +18,8 @@
                 <span asp-validation-for="Nombre" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Guardar" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-success">Regresar</a>
+                <input type="submit" value="Guardar" class="btn btn-dark" />
+                <a asp-action="Index" class="btn btn-dark">Regresar</a>
             </div>
 
         </form>

@@ -53,18 +53,83 @@ namespace Produccion.Controllers
                     RawMaterial = await _context.RawMaterials
                     .Include(r => r.Color)
                     .Include(r => r.Fabric)
+                    .Include(r => r.Inventories)
                     .FirstOrDefaultAsync(r => r.Id == model.RawMaterialId),
                     Garment = await _context.Garments.FindAsync(model.GarmentId)
                 };
-                Inventory inventory = await _context.Inventories.FirstOrDefaultAsync(i => i.RawMaterial.Id == productionOrder.RawMaterial.Id);
-                if (productionOrder.Unidades*productionOrder.Garment.ConsumoInvUnd > inventory.Cantidad)
+                
+
+                List<Inventory> Inventory = await _context.Inventories
+                    .Include(i=>i.RawMaterial)
+                    .ToListAsync();
+                List<InventoryIndexViewModel> InventoryPartial = new();
+                foreach (Inventory inventory in Inventory)
                 {
-                    ModelState.AddModelError(string.Empty, "No hay inventario suficiente.");
-                    model.RawMaterials = await _combosHelper.GetComboRawMaterialsAsync(0);
-                    model.Garments = await _combosHelper.GetComboGarmentsAsync();
-                    return View(model);
+                    if (InventoryPartial.Count == 0)
+                    {
+                        InventoryPartial.Add(new()
+                        {
+                            RawMaterial = inventory.RawMaterial,
+                            ExistenciaTotal = inventory.Existencia
+                        });
+                    }
+                    else
+                    {
+                        if (InventoryPartial.Any(i => i.RawMaterial.Id == inventory.RawMaterial.Id))
+                        {
+                            foreach (InventoryIndexViewModel rawMaterial in InventoryPartial)
+                            {
+                                if (rawMaterial.RawMaterial.Id == inventory.RawMaterial.Id)
+                                {
+                                    rawMaterial.ExistenciaTotal += inventory.Existencia;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            InventoryPartial.Add(new()
+                            {
+                                RawMaterial = inventory.RawMaterial,
+                                ExistenciaTotal = inventory.Existencia
+                            });
+                        }
+                    }
                 }
-                inventory.Cantidad = inventory.Cantidad - (productionOrder.Unidades * productionOrder.Garment.ConsumoInvUnd); 
+                float cant = productionOrder.Unidades * productionOrder.Garment.ConsumoInvUnd;
+                foreach (var item in InventoryPartial)
+                {
+                    if(item.RawMaterial.Id == productionOrder.RawMaterial.Id)
+                    {
+                        if(item.ExistenciaTotal >= cant)
+                        {
+                            bool num = false;
+                            foreach(Inventory item2 in Inventory)
+                            {
+                                if (item2.RawMaterial.Id == productionOrder.RawMaterial.Id && num == false)
+                                {
+                                    if(item2.Existencia >= cant)
+                                    {
+                                        item2.Existencia -= cant;
+                                        num = true;
+                                    }
+                                    else
+                                    {
+                                        cant -= item2.Existencia;
+                                        item2.Existencia = 0;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            ModelState.AddModelError(string.Empty, "No hay inventario suficiente.");
+                            model.RawMaterials = await _combosHelper.GetComboRawMaterialsAsync(0);
+                            model.Garments = await _combosHelper.GetComboGarmentsAsync();
+                            return View(model);
+                        }
+                    }
+                    
+                }               
                 _context.Add(productionOrder);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

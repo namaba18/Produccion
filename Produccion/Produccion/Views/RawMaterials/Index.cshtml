@@ -3,44 +3,71 @@
 @{
     ViewData["Title"] = "Index";
 }
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
 
 <h1><i class="fa fa-earth-americas"></i> Materia Prima</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-dark mb-2" style="float:right">Agregar Nueva Materia Prima <i class="fa-solid fa-circle-plus"></i></a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Color)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Fabric)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Color.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Fabric.Nombre)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pen-to-square text-dark"></i></a> |
-                <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash-can text-dark"></i></a>
-            </td>
-        </tr>
+<div class="boton">
+    <a asp-action="Create" class="btn btn-dark mb-2">Agregar Materia Prima <i class="fa-solid fa-circle-plus"></i></a>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default bg-light">
+            
+            <table class="table table-hover table-responsive table-striped" id="MyTable">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Nombre)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Color)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Fabric)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+            @foreach (var item in Model) {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Color.Nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Fabric.Nombre)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pen-to-square text-dark"></i></a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash-can text-dark"></i></a>
+                        </td>
+                    </tr>
+            }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#MyTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "aLengthMenu": [
+                    [25, 50, 100, 200, -1],
+                    [25, 50, 100, 200, "Todos"]
+                ]
+            });
+        });
+    </script>
 }
-    </tbody>
-</table>
