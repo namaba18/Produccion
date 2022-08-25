@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Produccion.Data.Entities;
+using Produccion.Models;
 
 namespace Produccion.Helpers
 {
@@ -14,6 +15,10 @@ namespace Produccion.Helpers
         Task AddUserToRoleAsync(User user, string roleName);
 
         Task<bool> IsUserInRoleAsync(User user, string roleName);
+
+        Task<SignInResult> LoginAsync(LoginViewModel model);
+
+        Task LogoutAsync();
 
     }
 }

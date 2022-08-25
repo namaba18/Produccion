@@ -24,6 +24,7 @@ namespace Produccion.Data
             await CheckRawMaterialsAsync();
             await CheckRolesAsync();
             await CheckUserAsync("1010", "Natalia", "Mantilla", "manti@yopmail.com", UserType.Admin);
+            await CheckUserAsync("2020", "Yorman", "Isaza", "yormi@yopmail.com", UserType.User);
 
         }
 
