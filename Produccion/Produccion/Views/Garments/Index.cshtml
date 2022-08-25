@@ -22,9 +22,6 @@
                         <th>
                             @Html.DisplayNameFor(model => model.ConsumoInvUnd)
                         </th>
-                        <th>
-                            Unidades
-                        </th>
                         <th></th>
                     </tr>
                 </thead>
@@ -35,10 +32,7 @@
                             @Html.DisplayFor(modelItem => item.Nombre)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.ConsumoInvUnd)
-                        </td>
-                        <td>
-                            Mts
+                            @Html.DisplayFor(modelItem => item.ConsumoInvUnd) m
                         </td>
                         <td>
                             <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pen-to-square text-dark"></i></a> |

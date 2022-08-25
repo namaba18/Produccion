@@ -3,55 +3,80 @@
 @{
     ViewData["Title"] = "Detalles";
 }
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
 
 <h1><i class="fa-solid fa-cart-flatbed"></i> Registro de inventarios</h1>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Consecutivo
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RawMaterial.Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RawMaterial.Fabric)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RawMaterial.Color)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Cantidad) 
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Existencia) 
-            </th>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default bg-light">
             
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model){
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RawMaterial.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RawMaterial.Fabric.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RawMaterial.Color.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cantidad) m
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Existencia) m
-            </td>
-        </tr>
+            <table class="table table-hover table-responsive table-striped" id="MyTable">
+                <thead>
+                    <tr>
+                        <th>
+                            Consecutivo
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.RawMaterial.Nombre)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.RawMaterial.Fabric)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.RawMaterial.Color)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Cantidad) 
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Existencia) 
+                        </th>
+            
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model){
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.RawMaterial.Nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.RawMaterial.Fabric.Nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.RawMaterial.Color.Nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Cantidad) m
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Existencia) m
+                        </td>
+                    </tr>
+            }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#MyTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "aLengthMenu": [
+                    [25, 50, 100, 200, -1],
+                    [25, 50, 100, 200, "Todos"]
+                ]
+            });
+        });
+    </script>
 }
-    </tbody>
-</table>

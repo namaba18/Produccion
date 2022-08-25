@@ -44,16 +44,51 @@ namespace Produccion.Controllers
 
         public async Task<IActionResult> Inventory(HomeViewModel model)
         {
-             IEnumerable<Inventory> inventory = await _context.Inventories
+             IEnumerable<Inventory> Inventory = await _context.Inventories
                 .Include(i => i.RawMaterial)
-                .ThenInclude(r => r.Color)
+                    .ThenInclude(r => r.Color)
                 .Include(i => i.RawMaterial)
-                .ThenInclude(r => r.Fabric)
+                    .ThenInclude(r => r.Fabric)
                 .Where(i => i.RawMaterial.Id == model.RawMaterialId)
                 .ToListAsync();
+            List<InventoryIndexViewModel> InventoryPartial = new();
+            foreach (Inventory inventory in Inventory)
+            {
+                if (InventoryPartial.Count == 0)
+                {
+                    InventoryPartial.Add(new()
+                    {
+                        RawMaterial = inventory.RawMaterial,
+                        ExistenciaTotal = inventory.Existencia
+                    });
+                }
+                else
+                {
+                    if (InventoryPartial.Any(i => i.RawMaterial.Id == inventory.RawMaterial.Id))
+                    {
+                        foreach (InventoryIndexViewModel rawMaterial in InventoryPartial)
+                        {
+                            if (rawMaterial.RawMaterial.Id == inventory.RawMaterial.Id)
+                            {
+                                rawMaterial.ExistenciaTotal += inventory.Existencia;
+                            }
 
-            return View(inventory);
+                        }
+                    }
+                    else
+                    {
+                        InventoryPartial.Add(new()
+                        {
+                            RawMaterial = inventory.RawMaterial,
+                            ExistenciaTotal = inventory.Existencia
+                        });
+                    }
+                }
+            }
+
+            return View(InventoryPartial);
         }
+        
 
         public async Task<IActionResult> Garment(HomeViewModel model)
         {            

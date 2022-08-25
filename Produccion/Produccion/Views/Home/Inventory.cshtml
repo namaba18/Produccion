@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Produccion.Data.Entities.Inventory>
+﻿@model IEnumerable<Produccion.Models.InventoryIndexViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
 
 <h1><i class="fa-solid fa-cart-flatbed"></i> Inventario</h1>
+
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default bg-light">
@@ -13,7 +14,7 @@
                 <thead>
                     <tr>
                         <th>
-                            @Html.DisplayNameFor(model => model.Id)
+                            @Html.DisplayNameFor(model => model.RawMaterial.Id)
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.RawMaterial)
@@ -25,19 +26,15 @@
                             @Html.DisplayNameFor(model => model.RawMaterial.Color)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Cantidad)
+                            @Html.DisplayNameFor(model => model.ExistenciaTotal)
                         </th>
-                        <th>
-                            Unidades
-                        </th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model) {
                     <tr>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Id)
+                            @Html.DisplayFor(modelItem => item.RawMaterial.Id)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.RawMaterial.Nombre)
@@ -49,10 +46,7 @@
                             @Html.DisplayFor(modelItem => item.RawMaterial.Color.Nombre)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Cantidad)
-                        </td>
-                        <td>
-                            Mts
+                            @Html.DisplayFor(modelItem => item.ExistenciaTotal) m
                         </td>
 
                     </tr>

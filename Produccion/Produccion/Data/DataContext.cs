@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Produccion.Data.Entities;
 
 namespace Produccion.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<User>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
@@ -16,6 +17,13 @@ namespace Produccion.Data
         public DbSet<Inventory> Inventories { get; set; }
         public DbSet<ProductionOrder> ProductionOrders { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Color>().HasIndex(c => c.Nombre).IsUnique();
+            modelBuilder.Entity<Fabric>().HasIndex(c => c.Nombre).IsUnique();
+            modelBuilder.Entity<Garment>().HasIndex(c => c.Nombre).IsUnique();
+        }
 
     }
 }
