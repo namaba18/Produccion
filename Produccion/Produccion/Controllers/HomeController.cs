@@ -137,5 +137,12 @@ namespace Produccion.Controllers
 
             return View(garments);
         }
+
+        [Route("error/404")]
+        public IActionResult Error404()
+        {
+            return View();
+        }
+
     }
 }
