@@ -2,24 +2,28 @@
 @{
     ViewData["Title"] = "Edit";
 }
+<flash dismissable="true" />
 
-<h2>Editar</h2>
-
-<h4>Usuario</h4>
-<hr />
 <div class="row">
-    <div class="col-md-8">
-        <form asp-action="ChangeUser">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+    <div class="col-md-12 offset-12">
+        <div class="card bg-dark mb-3 " >
+            <h2 class="text-light m-2"><i class="fa-solid fa-user-pen"></i> Editar Usuario</h2>
+            <div class="card-body bg-light">
+                <div class="col-md-12">
+                    <form asp-action="ChangeUser">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="Id" />
 
-            <partial name="_User" />
+                        <partial name="_User" />
 
-            <div class="form-group mt-2">
-                <input type="submit" value="Guardar" class="btn btn-outline-primary" />
-                <a asp-action="ChangePassword" class="btn btn-outline-secondary">Cambiar Contraseña</a>
+                        <div class="form-group mt-2">
+                            <input type="submit" value="Guardar" class="btn btn-outline-dark" />
+                            <a asp-action="ChangePassword" class="btn btn-outline-dark">Cambiar Contraseña</a>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 

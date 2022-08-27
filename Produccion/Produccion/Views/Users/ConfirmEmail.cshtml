@@ -2,10 +2,17 @@
 @{
     ViewData["Title"] = "Confirmación de Email";
 }
+<flash dismissable="true" />
 
-<h2>@ViewData["Title"]</h2>
-<div>
-    <p>
-        Gracias por confirmar el email, ahora puedes iniciar sesión en el sistema.
-    </p>
+<div class="row">
+    <div class="col-md-3 offset-3">
+        <div class="card bg-dark mb-3" style="width: 650px; height: 100px">
+            <h2 class="card-header text-center text-white">@ViewData["Title"]</h2>
+            <div class="card-body text-center bg-light">
+                <h3>
+                    Gracias por confirmar el email, ahora puedes iniciar sesión en el sistema.
+                </h3>
+            </div>
+        </div>
+    </div>
 </div>

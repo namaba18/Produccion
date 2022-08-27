@@ -3,69 +3,76 @@
 @{
     ViewData["Title"] = "Index";
 }
+<flash dismissable="true" />
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
 
 <div class="boton">
+    <a asp-action="ResendToken" class="btn btn-dark mb-2">Reenviar Token</a>
     <a asp-action="Create" class="btn btn-dark mb-2">Nuevo Usuario <i class="fa-solid fa-circle-plus"></i> </a>
 </div>
   
 <div class="row">
     <div class="col-md-12">
-        <div class="panel panel-default bg-light">
-            <div class="panel-heading">
-                <h3 class="panel-title">Usuarios</h3>
-            </div>
-            <div class="panel-body">
-                <table class="table table-hover table-responsive table-striped" id="MyTable">
-                    <thead>
-                        <tr>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Document)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Email)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.FirstName)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.LastName)
-                            </th>          
-                            <th>
-                                @Html.DisplayNameFor(model => model.UserType)
-                            </th>
-                            <th>
-                                Habilitado
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
+        <div class="card bg-dark mb-3 " >
+            <h3 class="panel-title text-light m-2"><i class="fa-solid fa-users"></i> Usuarios</h3>
+            <div class="panel panel-default bg-light">
+                <div class="panel-heading">
+                    
+                </div>
+                <div class="panel-body">
+                    <table class="table table-hover table-responsive table-striped" id="MyTable">
+                        <thead>
                             <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Document)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Email)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.FirstName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.LastName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.UserType)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.EmailConfirmed)
-                                </td>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Document)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Email)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.FirstName)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.LastName)
+                                </th>          
+                                <th>
+                                    @Html.DisplayNameFor(model => model.UserType)
+                                </th>
+                                <th>
+                                    Habilitado
+                                </th>
+                                
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Document)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Email)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.FirstName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.LastName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.UserType)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.EmailConfirmed)
+                                    </td>
+                                    
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

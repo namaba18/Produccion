@@ -5,61 +5,63 @@
 }
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
 
-<h1><i class="fa-solid fa-cart-flatbed"></i> Inventario</h1>
 <div class="boton">
     <a asp-action="AddInventory" class="btn btn-dark mb-2">Agregar Inventario <i class="fa-solid fa-circle-plus"></i> </a>
 </div>
 <div class="row">
     <div class="col-md-12">
-        <div class="panel panel-default bg-light">
+        <div class="card bg-dark mb-3 " >
+            <h3 class="panel-title text-light m-2"><i class="fa-solid fa-cart-flatbed"></i> Inventario</h3>
+            <div class="panel panel-default bg-light">
             
-            <table class="table table-hover table-responsive table-striped" id="MyTable">
-                <thead>
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.RawMaterial.Id)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.RawMaterial.Nombre)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.RawMaterial.Fabric)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.RawMaterial.Color)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.ExistenciaTotal)
-                        </th>
-                        <th></th>
+                <table class="table table-hover table-responsive table-striped" id="MyTable">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.RawMaterial.Id)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.RawMaterial.Nombre)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.RawMaterial.Fabric)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.RawMaterial.Color)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ExistenciaTotal)
+                            </th>
+                            <th></th>
             
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model){
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.RawMaterial.Id)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.RawMaterial.Nombre)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.RawMaterial.Fabric.Nombre)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.RawMaterial.Color.Nombre)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ExistenciaTotal) m
-                        </td>
-                        <td>                
-                            <a asp-action="Details" asp-route-id="@item.RawMaterial.Id"><i class="fa-solid fa-circle-info"></i> Detalles</a>
-                        </td>
-                    </tr>
-            }
-                </tbody>
-            </table>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model){
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.RawMaterial.Id)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.RawMaterial.Nombre)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.RawMaterial.Fabric.Nombre)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.RawMaterial.Color.Nombre)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ExistenciaTotal) m
+                            </td>
+                            <td>                
+                                <a asp-action="Details" asp-route-id="@item.RawMaterial.Id"><i class="fa-solid fa-circle-info"></i> Detalles</a>
+                            </td>
+                        </tr>
+                }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
