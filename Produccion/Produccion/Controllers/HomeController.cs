@@ -95,12 +95,15 @@ namespace Produccion.Controllers
             Fabric fabric = await _context.Fabrics
                 .Include(f => f.RawMaterials)
                     .ThenInclude(r => r.ProductionOrders)
+                    .ThenInclude(p => p.Garment)
                 .Include(f => f.RawMaterials)
                     .ThenInclude(r => r.Color)
                 .FirstOrDefaultAsync(f => f.Id == model.FabricId);
 
             IEnumerable<RawMaterial> rawMaterials = await _context.RawMaterials
                 .Include(r => r.ProductionOrders)
+                    .ThenInclude(p => p.Garment)
+                .Include(r => r.Color)
                 .Where(r => r.Fabric == fabric)
                 .ToListAsync();
 
@@ -110,7 +113,9 @@ namespace Produccion.Controllers
                 IEnumerable<ProductionOrder> productionOrders = await _context.ProductionOrders
                     .Include(p => p.Garment)
                     .Include(p => p.RawMaterial)
-                    .ThenInclude(r => r.Color)
+                        .ThenInclude(r => r.Fabric)
+                    .Include(p => p.RawMaterial)
+                        .ThenInclude(r => r.Color)
                     .Where(p => p.RawMaterial == item)
                     .ToListAsync();
                 foreach(ProductionOrder item2 in productionOrders)
@@ -118,22 +123,37 @@ namespace Produccion.Controllers
                      Orders.Add(item2);                    
                 }
             }
-            List<Garment> garments = new();
+
+            List<TotalGarmentViewModel> garments = new();
             foreach (var item in Orders)
             {
                 if( garments.Count == 0)
                 {
-                    garments.Add(item.Garment);
+                    garments.Add(new TotalGarmentViewModel {
+                        Garment = item.Garment,
+                        Cantidad = item.Unidades,
+                        Color = item.RawMaterial.Color
+                    });
+                   
                 }
-                else
+                else 
                 {
-                    if (!garments.Any(g => g.Id == item.Garment.Id))
+                    if (garments.Any(g => g.Garment.Id == item.Garment.Id && g.Color == item.RawMaterial.Color))
                     {
-                        garments.Add(item.Garment);
+                        garments.Find(g => g.Garment.Id == item.Garment.Id && g.Color == item.RawMaterial.Color).Cantidad += item.Unidades;
                     }
-                }               
-                
+                    else { 
+                        garments.Add(new TotalGarmentViewModel
+                        {
+                            Garment = item.Garment,
+                            Cantidad = item.Unidades,
+                            Color = item.RawMaterial.Color
+                        });
+                    }
+                }                  
             }
+
+            
 
             return View(garments);
         }

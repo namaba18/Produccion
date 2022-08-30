@@ -4,6 +4,7 @@ using Produccion.Data;
 using Produccion.Data.Entities;
 using Produccion.Helpers;
 using Produccion.Models;
+using Vereyon.Web;
 
 namespace Produccion.Controllers
 {
@@ -11,11 +12,13 @@ namespace Produccion.Controllers
     {
         private readonly DataContext _context;
         private readonly ICombosHelper _combosHelper;
+        private readonly IFlashMessage _flashMessage;
 
-        public ProductionOrdersController(DataContext context, ICombosHelper combosHelper)
+        public ProductionOrdersController(DataContext context, ICombosHelper combosHelper, IFlashMessage flashMessage)
         {
             _context = context;
             _combosHelper = combosHelper;
+            _flashMessage = flashMessage;
         }
 
         public async Task<IActionResult> Index()
@@ -117,23 +120,28 @@ namespace Produccion.Controllers
                                         cant -= item2.Existencia;
                                         item2.Existencia = 0;
                                     }
+                                    _context.Add(productionOrder);
+                                    await _context.SaveChangesAsync();
                                 }
                             }
                         }
                         else
-                        {
-                            ModelState.AddModelError(string.Empty, "No hay inventario suficiente.");
+                        {                            
+                            model.Colors = await _combosHelper.GetComboColorsAsync();
+                            model.Fabrics = await _combosHelper.GetComboFabricsAsync();
                             model.RawMaterials = await _combosHelper.GetComboRawMaterialsAsync(0);
                             model.Garments = await _combosHelper.GetComboGarmentsAsync();
+                            _flashMessage.Danger("No hay inventario suficiente.");
                             return View(model);
                         }
                     }
                     
                 }               
-                _context.Add(productionOrder);
-                await _context.SaveChangesAsync();
+                
                 return RedirectToAction(nameof(Index));
             }
+            model.Colors = await _combosHelper.GetComboColorsAsync();
+            model.Fabrics = await _combosHelper.GetComboFabricsAsync();
             model.RawMaterials= await _combosHelper.GetComboRawMaterialsAsync(0);
             model.Garments = await _combosHelper.GetComboGarmentsAsync();
             return View(model);
