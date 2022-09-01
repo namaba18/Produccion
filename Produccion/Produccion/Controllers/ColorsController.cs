@@ -3,16 +3,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Produccion.Data;
 using Produccion.Data.Entities;
+using Vereyon.Web;
 
 namespace Produccion.Controllers
 {
     public class ColorsController : Controller
     {
         private readonly DataContext _context;
+        private readonly IFlashMessage _flashMessage;
 
-        public ColorsController(DataContext context)
+        public ColorsController(DataContext context, IFlashMessage flashMessage) 
         {
             _context = context;
+            _flashMessage = flashMessage;
         }
 
         public async Task<IActionResult> Index()
@@ -70,6 +73,7 @@ namespace Produccion.Controllers
                 {
                     _context.Update(color);
                     await _context.SaveChangesAsync();
+                    _flashMessage.Confirmation("Registro actualizado.");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -120,6 +124,7 @@ namespace Produccion.Controllers
             }
 
             await _context.SaveChangesAsync();
+            _flashMessage.Info("Registro borrado.");
             return RedirectToAction(nameof(Index));
         }
 
