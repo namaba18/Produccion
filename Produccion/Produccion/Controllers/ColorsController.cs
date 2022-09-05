@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Produccion.Data;
 using Produccion.Data.Entities;
+using Produccion.Helpers;
 using Vereyon.Web;
+using static Produccion.Helpers.ModalHelper;
 
 namespace Produccion.Controllers
 {
@@ -24,113 +26,97 @@ namespace Produccion.Controllers
                 .ToListAsync());  
         }
 
-        public IActionResult Create()
+        [NoDirectAccess]
+        public async Task<IActionResult> AddOrEdit(int id)
         {
-            return View();
+            if(id == 0)
+            {
+                return View(new Color());
+            }
+            else
+            {
+                Color color = await _context.Colors.FindAsync(id);
+                if(color == null)
+                {
+                    return NotFound();
+                }
+
+                return View(color);
+            }
+            
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Color color)
+        public async Task<IActionResult> AddOrEdit(int id, Color color)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(color);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(color);
-        }
-
-
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Colors == null)
-            {
-                return NotFound();
-            }
-
-            Color color = await _context.Colors.FindAsync(id);
-            if (color == null)
-            {
-                return NotFound();
-            }
-            return View(color);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Color color)
-        {
-            if (id != color.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(color);
-                    await _context.SaveChangesAsync();
-                    _flashMessage.Confirmation("Registro actualizado.");
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ColorExists(color.Id))
+                    if(id==0)
                     {
-                        return NotFound();
+                        _context.Add(color);
+                        await _context.SaveChangesAsync();
+                        _flashMessage.Info("Registro creado");
                     }
                     else
                     {
-                        throw;
+                        _context.Update(color);
+                        await _context.SaveChangesAsync();
+                        _flashMessage.Info("Registro actualizado");
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        _flashMessage.Danger("Ya existe un registro con el mismo nombre.");
+                    }
+                    else
+                    {
+                        _flashMessage.Danger(dbUpdateException.InnerException.Message);
+                    }
+                    return View(color);
+                }
+                catch (Exception exception)
+                {
+                    _flashMessage.Danger(exception.Message);
+                    return View(color);
+                }
+                return Json(new { isValid = true, html = ModalHelper.RenderRazorViewToString(this, "Index", _context.Colors.ToList()) });
             }
-            return View(color);
-        }
 
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "AddOrEdit", color) });
+
+        }
+                
         [Authorize(Roles = "Admin")]
+        [NoDirectAccess]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Colors == null)
-            {
-                return NotFound();
-            }
-
-            var color = await _context.Colors
+                        
+            Color color = await _context.Colors
+                .Include(c => c.RawMaterials)
+                    .ThenInclude(r => r.Inventories)
+                .Include(c => c.RawMaterials)
+                    .ThenInclude(r => r.ProductionOrders)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (color == null)
-            {
-                return NotFound();
-            }
-
-            return View(color);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Colors == null)
-            {
-                return Problem("Entity set 'DataContext.Colors'  is null.");
-            }
-            var color = await _context.Colors.FindAsync(id);
-            if (color != null)
+            try 
             {
                 _context.Colors.Remove(color);
+                await _context.SaveChangesAsync();
+                _flashMessage.Info("Registro borrado.");
+
             }
+            catch
+            {
+                _flashMessage.Danger("No se puede borrar el registro porque tiene datos relacionados.");
 
-            await _context.SaveChangesAsync();
-            _flashMessage.Info("Registro borrado.");
+            }
             return RedirectToAction(nameof(Index));
+            
         }
 
-        private bool ColorExists(int id)
-        {
-            return (_context.Colors?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
     }
 }

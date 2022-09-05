@@ -173,7 +173,7 @@ namespace Produccion.Migrations
                     b.HasIndex("Nombre")
                         .IsUnique();
 
-                    b.ToTable("Colors");
+                    b.ToTable("Colors", (string)null);
                 });
 
             modelBuilder.Entity("Produccion.Data.Entities.Fabric", b =>
@@ -194,7 +194,7 @@ namespace Produccion.Migrations
                     b.HasIndex("Nombre")
                         .IsUnique();
 
-                    b.ToTable("Fabrics");
+                    b.ToTable("Fabrics", (string)null);
                 });
 
             modelBuilder.Entity("Produccion.Data.Entities.Garment", b =>
@@ -217,7 +217,7 @@ namespace Produccion.Migrations
                     b.HasIndex("Nombre")
                         .IsUnique();
 
-                    b.ToTable("Garments");
+                    b.ToTable("Garments", (string)null);
                 });
 
             modelBuilder.Entity("Produccion.Data.Entities.Inventory", b =>
@@ -241,7 +241,7 @@ namespace Produccion.Migrations
 
                     b.HasIndex("RawMaterialId");
 
-                    b.ToTable("Inventories");
+                    b.ToTable("Inventories", (string)null);
                 });
 
             modelBuilder.Entity("Produccion.Data.Entities.ProductionOrder", b =>
@@ -267,7 +267,7 @@ namespace Produccion.Migrations
 
                     b.HasIndex("RawMaterialId");
 
-                    b.ToTable("ProductionOrders");
+                    b.ToTable("ProductionOrders", (string)null);
                 });
 
             modelBuilder.Entity("Produccion.Data.Entities.RawMaterial", b =>
@@ -295,7 +295,7 @@ namespace Produccion.Migrations
 
                     b.HasIndex("FabricId");
 
-                    b.ToTable("RawMaterials");
+                    b.ToTable("RawMaterials", (string)null);
                 });
 
             modelBuilder.Entity("Produccion.Data.Entities.User", b =>

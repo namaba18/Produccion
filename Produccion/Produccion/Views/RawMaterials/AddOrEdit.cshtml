@@ -1,0 +1,25 @@
+﻿@model Produccion.Models.RawMaterialViewModel
+
+@{
+    ViewData["Title"] = "Materia Prima";
+    Layout = null;
+}
+
+<flash dismissable="true" />
+
+<div class="container smfont">
+    <form asp-action="AddOrEdit" autocomplete="off" asp-route-id="@Model.Id" onsubmit="return jQueryAjaxPost(this);">
+        <div class="box-body">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <partial name="_RawMaterial"/>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-dark" data-bs-dismiss="modal"><i class="fa fa-ban"></i> Cancelar</button>
+            <button type="submit" class="btn btn-sm btn-dark"><i class="fa fa-save"></i> Guardar</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

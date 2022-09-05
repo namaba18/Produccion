@@ -16,6 +16,7 @@ namespace Produccion.Data.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         [JsonIgnore]
         public Fabric Fabric { get; set; }
+
         [Display(Name = "Color")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         [JsonIgnore]

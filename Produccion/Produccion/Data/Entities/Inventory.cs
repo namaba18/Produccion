@@ -8,7 +8,7 @@ namespace Produccion.Data.Entities
         public int Id { get; set; }
 
         [Display(Name = "Cantidad")]
-        [Required]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
         [DisplayFormat(DataFormatString = "{0:N2}")]
         public float Cantidad { get; set; }
 
@@ -18,7 +18,7 @@ namespace Produccion.Data.Entities
         public float Existencia { get; set; }
 
         [Display(Name = "Materia Prima")]
-        [Required]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public RawMaterial RawMaterial { get; set; }
 
     }

@@ -7,7 +7,7 @@
 
 
 <div class="boton">
-    <h3 class="panel-title"><a asp-action="Create" class="btn btn-dark mb-2" >Agregar Color <i class="fa-solid fa-circle-plus"></i></a></h3>
+    <a onclick="showInPopup('@Url.Action("AddOrEdit", "Colors", new { id = 0 }, Context.Request.Scheme)' , 'Agregar color')" class="btn btn-dark mb-2" ><i class="fa-solid fa-circle-plus"></i> Color</a>
 </div>
 <div class="row">
     <div class="col-md-12">
@@ -30,8 +30,10 @@
                                 @Html.DisplayFor(modelItem => item.Nombre)
                             </td>
                             <td>
-                                <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pen-to-square text-dark"></i></a> |
-                                <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash-can text-dark"></i></a>
+                              
+                                <a onclick="showInPopup('@Url.Action("AddOrEdit", "Colors", new { id=item.Id }, Context.Request.Scheme)' , 'Actualizar Color')" class="btn btn-sm btn-warning"><i class="fa-solid fa-pen-to-square text-dark"></i> </a>
+                                <button data-id="@item.Id" class="btn btn-sm btn-danger deleteItem" data-bs-toggle="modal" data-bs-target="#deleteDialog"><i class="fa fa-trash"></i></button>
+
                             </td>
                         </tr>
                 }
@@ -41,9 +43,28 @@
         </div>
     </div>
 </div>
+
+<!--modal placeholder. Also you can place this modal form in the _Layout.cshtml-->
+<div class="modal fade in" tabindex="-1" role="dialog" data-bs-backdrop="static" id="form-modal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-dark">
+                <h5 class="modal-title text-white"></h5>
+                <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close">                   
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="_DeleteDialog" />
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     
+    <script src="~/js/showmodal.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -58,4 +79,9 @@
             });
         });
     </script>
+
+    <script>
+        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Colors/Delete/', false);
+    </script>
+
 }

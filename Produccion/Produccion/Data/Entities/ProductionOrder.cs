@@ -8,13 +8,15 @@ namespace Produccion.Data.Entities
         public int Id { get; set; }
 
         [Display(Name = "Unidades")]
-        [Required]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public int Unidades { get; set; }
 
         [Display(Name = "Prenda")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public Garment Garment { get; set; }
 
         [Display(Name = "Materia Prima")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public RawMaterial RawMaterial { get; set; }
 
         public int GarmentNumber => Unidades == null ? 0 : Unidades++;

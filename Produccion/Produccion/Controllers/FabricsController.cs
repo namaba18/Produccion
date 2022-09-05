@@ -3,127 +3,112 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Produccion.Data;
 using Produccion.Data.Entities;
+using Produccion.Helpers;
+using Vereyon.Web;
+using static Produccion.Helpers.ModalHelper;
 
 namespace Produccion.Controllers
 {
     public class FabricsController : Controller
     {
         private readonly DataContext _context;
-        public FabricsController(DataContext context)
+        private readonly IFlashMessage _flashMessage;
+
+        public FabricsController(DataContext context, IFlashMessage flashMessage)
         {
             _context = context;
-
+            _flashMessage = flashMessage;
         }
         public async Task<IActionResult> Index()
         {
             return View(await _context.Fabrics.ToListAsync());
         }
 
-        public IActionResult Create()
+        [NoDirectAccess]
+        public async Task<IActionResult> AddOrEdit(int id)
         {
-            return View();
+            if (id == 0)
+            {
+                return View(new Fabric());
+            }
+            else
+            {
+                Fabric fabric = await _context.Fabrics.FindAsync(id);
+                if (fabric == null)
+                {
+                    return NotFound();
+                }
+
+                return View(fabric);
+            }
+
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Fabric fabric)
+        public async Task<IActionResult> AddOrEdit(int id, Fabric fabric)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(fabric);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(fabric);
-        }
-
-
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Fabrics == null)
-            {
-                return NotFound();
-            }
-
-            Fabric fabric = await _context.Fabrics.FindAsync(id);
-            if (fabric == null)
-            {
-                return NotFound();
-            }
-            return View(fabric);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Fabric fabric)
-        {
-            if (id != fabric.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(fabric);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!FabricExists(fabric.Id))
+                    if (id == 0)
                     {
-                        return NotFound();
+                        _context.Add(fabric);
+                        await _context.SaveChangesAsync();
+                        _flashMessage.Info("Registro creado");
                     }
                     else
                     {
-                        throw;
+                        _context.Update(fabric);
+                        await _context.SaveChangesAsync();
+                        _flashMessage.Info("Registro actualizado");
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        _flashMessage.Danger("Ya existe un registro con el mismo nombre.");
+                    }
+                    else
+                    {
+                        _flashMessage.Danger(dbUpdateException.InnerException.Message);
+                    }
+                    return View(fabric);
+                }
+                catch (Exception exception)
+                {
+                    _flashMessage.Danger(exception.Message);
+                    return View(fabric);
+                }
+                return Json(new { isValid = true, html = ModalHelper.RenderRazorViewToString(this, "Index", _context.Fabrics.ToList()) });
             }
-            return View(fabric);
-        }
 
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "AddOrEdit", fabric) });
+
+        }
         [Authorize(Roles = "Admin")]
+        [NoDirectAccess]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Fabrics == null)
-            {
-                return NotFound();
-            }
 
-            var color = await _context.Fabrics
+            Fabric fabric = await _context.Fabrics
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (color == null)
-            {
-                return NotFound();
-            }
-
-            return View(color);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Fabrics == null)
-            {
-                return Problem("Entity set 'DataContext.Fabrics'  is null.");
-            }
-            Fabric fabric = await _context.Fabrics.FindAsync(id);
-            if (fabric != null)
+            try
             {
                 _context.Fabrics.Remove(fabric);
+                await _context.SaveChangesAsync();
+                _flashMessage.Info("Registro borrado.");
+
             }
+            catch
+            {
+                _flashMessage.Danger("No se puede borrar el registro porque tiene datos relacionados.");
 
-            await _context.SaveChangesAsync();
+            }
             return RedirectToAction(nameof(Index));
-        }
 
-        private bool FabricExists(int id)
-        {
-            return (_context.Fabrics?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
