@@ -64,7 +64,7 @@ namespace Produccion.Helpers
                     .OrderBy(c => c.Text)
                     .ToListAsync();
 
-                list.Insert(0, new SelectListItem { Text = "[Seleccione una Materia Prima...]", Value = "0" });
+                list.Insert(0, new SelectListItem { Text = "[Seleccione un material...]", Value = "0" });
 
                 return list;
             }
@@ -81,7 +81,7 @@ namespace Produccion.Helpers
                     .OrderBy(c => c.Text)
                     .ToListAsync();
 
-                list.Insert(0, new SelectListItem { Text = "[Seleccione una Materia Prima...]", Value = "0" });
+                list.Insert(0, new SelectListItem { Text = "[Seleccione un material...]", Value = "0" });
 
                 return list;
             }

@@ -32,8 +32,7 @@ namespace Produccion.Controllers
                 .OrderBy(p => p.Id)
                 .ToListAsync());
         }
-
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> AddOrEdit(int id)
         {
             ProductionOrderViewModel model = new()
             {
@@ -42,110 +41,140 @@ namespace Produccion.Controllers
                 Fabrics = await _combosHelper.GetComboFabricsAsync(),
                 RawMaterials = await _combosHelper.GetComboRawMaterialsAsync(0),
                 Garments = await _combosHelper.GetComboGarmentsAsync(),
-            };
-            return View(model);
+            };            
+            if (id == 0)
+            {
+                return View(model);
+            }
+            else
+            {
+                ProductionOrder order = await _context.ProductionOrders
+                .Include(r => r.RawMaterial)
+                .ThenInclude(i => i.Color)
+                .Include(i => i.RawMaterial)
+                .ThenInclude(r => r.Fabric)
+                .Include(i => i.RawMaterial)
+                .ThenInclude(r => r.Inventories)
+                .Include(o => o.Garment)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+                model = new()
+                {
+                    Id = order.Id,
+                    Colors = await _combosHelper.GetComboColorsAsync(),
+                    ColorId = order.RawMaterial.Color.Id,
+                    Fabrics = await _combosHelper.GetComboFabricsAsync(),
+                    FabricId = order.RawMaterial.Fabric.Id,
+                    RawMaterials = await _combosHelper.GetComboRawMaterialsAsync(),
+                    RawMaterialId = order.RawMaterial.Id,
+                    Garments = await _combosHelper.GetComboGarmentsAsync(),
+                    GarmentId = order.Garment.Id,
+                    Unidades = order.Unidades
+                };
+
+                return View(model);
+            }
         }
+
         [HttpPost]
-        public async Task<IActionResult> Create(ProductionOrderViewModel model)
+        public async Task<IActionResult> AddOrEdit(int id, ProductionOrderViewModel model)
         {
             if (ModelState.IsValid)
             {
-                ProductionOrder productionOrder = new()
+                try
                 {
-                    Unidades = model.Unidades,
-                    RawMaterial = await _context.RawMaterials
-                    .Include(r => r.Color)
-                    .Include(r => r.Fabric)
-                    .Include(r => r.Inventories)
-                    .FirstOrDefaultAsync(r => r.Id == model.RawMaterialId),
-                    Garment = await _context.Garments.FindAsync(model.GarmentId)
-                };
-                
-
-                List<Inventory> Inventory = await _context.Inventories
-                    .Include(i=>i.RawMaterial)
-                    .ToListAsync();
-                List<InventoryIndexViewModel> InventoryPartial = new();
-                foreach (Inventory inventory in Inventory)
-                {
-                    if (InventoryPartial.Count == 0)
+                    if (id == 0)
                     {
-                        InventoryPartial.Add(new()
+                        List<Inventory> Inventory = await _context.Inventories
+                                                        .Include(i => i.RawMaterial)
+                                                            .ThenInclude(r => r.Color)
+                                                        .Include(i => i.RawMaterial)
+                                                            .ThenInclude(r => r.Fabric)
+                                                        .Where(i => i.RawMaterial.Id == model.RawMaterialId)
+                                                        .ToListAsync();
+                        float existence = 0;
+                        foreach (Inventory item in Inventory)
                         {
-                            RawMaterial = inventory.RawMaterial,
-                            ExistenciaTotal = inventory.Existencia
-                        });
-                    }
-                    else
-                    {
-                        if (InventoryPartial.Any(i => i.RawMaterial.Id == inventory.RawMaterial.Id))
-                        {
-                            foreach (InventoryIndexViewModel rawMaterial in InventoryPartial)
-                            {
-                                if (rawMaterial.RawMaterial.Id == inventory.RawMaterial.Id)
-                                {
-                                    rawMaterial.ExistenciaTotal += inventory.Existencia;
-                                }
-                            }
+                            existence += item.Existencia;
                         }
-                        else
+                        Garment garment = await _context.Garments.FindAsync(model.GarmentId);
+                        float cant = model.Unidades * garment.ConsumoInvUnd;
+                        if (existence >= cant)
                         {
-                            InventoryPartial.Add(new()
+                            ProductionOrder productionOrder = new()
                             {
-                                RawMaterial = inventory.RawMaterial,
-                                ExistenciaTotal = inventory.Existencia
-                            });
-                        }
-                    }
-                }
-                float cant = productionOrder.Unidades * productionOrder.Garment.ConsumoInvUnd;
-                foreach (var item in InventoryPartial)
-                {
-                    if(item.RawMaterial.Id == productionOrder.RawMaterial.Id)
-                    {
-                        if(item.ExistenciaTotal >= cant)
-                        {
+                                Unidades = model.Unidades,
+                                RawMaterial = await _context.RawMaterials
+                                                .Include(r => r.Color)
+                                                .Include(r => r.Fabric)
+                                                .Include(r => r.Inventories)
+                                                .FirstOrDefaultAsync(r => r.Id == model.RawMaterialId),
+                                Garment = garment
+                            };
                             bool num = false;
-                            foreach(Inventory item2 in Inventory)
+                            foreach (Inventory item in Inventory)
                             {
-                                if (item2.RawMaterial.Id == productionOrder.RawMaterial.Id && num == false)
+                                if (num == false)
                                 {
-                                    if(item2.Existencia >= cant)
+                                    if (item.Existencia >= cant)
                                     {
-                                        item2.Existencia -= cant;
+                                        item.Existencia -= cant;
                                         num = true;
                                     }
                                     else
                                     {
-                                        cant -= item2.Existencia;
-                                        item2.Existencia = 0;
+                                        cant -= item.Existencia;
+                                        item.Existencia = 0;
                                     }
-                                    _context.Add(productionOrder);
-                                    await _context.SaveChangesAsync();
                                 }
                             }
+                            _context.Add(productionOrder);
+                            await _context.SaveChangesAsync();
+                            _flashMessage.Info("Orden creada con exito");
                         }
                         else
-                        {                            
+                        {
                             model.Colors = await _combosHelper.GetComboColorsAsync();
                             model.Fabrics = await _combosHelper.GetComboFabricsAsync();
-                            model.RawMaterials = await _combosHelper.GetComboRawMaterialsAsync(0);
+                            model.RawMaterials = await _combosHelper.GetComboRawMaterialsAsync();
                             model.Garments = await _combosHelper.GetComboGarmentsAsync();
                             _flashMessage.Danger("No hay inventario suficiente.");
                             return View(model);
                         }
                     }
-                    
-                }               
-                
+
+                    else
+                    {
+
+                    }
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        _flashMessage.Danger("Ya existe un registro con el mismo nombre.");
+                    }
+                    else
+                    {
+                        _flashMessage.Danger(dbUpdateException.InnerException.Message);
+                    }
+                    return View(model);
+                }
+                catch (Exception exception)
+                {
+                    _flashMessage.Danger(exception.Message);
+                    return View(model);
+                }
+                model.Colors = await _combosHelper.GetComboColorsAsync();
+                model.Fabrics = await _combosHelper.GetComboFabricsAsync();
+                model.RawMaterials = await _combosHelper.GetComboRawMaterialsAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            model.Colors = await _combosHelper.GetComboColorsAsync();
-            model.Fabrics = await _combosHelper.GetComboFabricsAsync();
-            model.RawMaterials= await _combosHelper.GetComboRawMaterialsAsync(0);
-            model.Garments = await _combosHelper.GetComboGarmentsAsync();
+
+            }           
             return View(model);
         }
+
+            
         public JsonResult GetRawMaterialColor(int colorId)
         {
             Color color = _context.Colors

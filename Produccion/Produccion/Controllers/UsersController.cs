@@ -72,7 +72,7 @@ namespace Produccion.Controllers
                 if (response.IsSuccess)
                 {
                     _flashMessage.Info("Usuario registrado. Para poder ingresar al sistema, siga las instrucciones que han sido enviadas a su correo.");
-                    return RedirectToAction("Login", "AccountController");
+                    return RedirectToAction("Index");
                 }
 
                 _flashMessage.Danger(string.Empty, response.Message);
@@ -138,7 +138,7 @@ namespace Produccion.Controllers
                 if (response.IsSuccess)
                 {
                     _flashMessage.Info("Email Re-Envíado. Para poder ingresar al sistema, siga las instrucciones que han sido enviadas al correo.");
-                    return RedirectToAction(nameof(Index));
+                    return Json(new { isValid = true, html = ModalHelper.RenderRazorViewToString(this, "Index", _context.Users.ToList()) });
                 }
 
                 _flashMessage.Danger(response.Message);

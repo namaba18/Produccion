@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Produccion.Data;
 using Produccion.Data.Entities;
 using Produccion.Helpers;
 using Produccion.Models;
+using Vereyon.Web;
+using static Produccion.Helpers.ModalHelper;
 
 namespace Produccion.Controllers
 {
@@ -11,11 +14,13 @@ namespace Produccion.Controllers
     {
         private readonly DataContext _context;
         private readonly ICombosHelper _combosHelper;
+        private readonly IFlashMessage _flashMessage;
 
-        public InventoriesController(DataContext context, ICombosHelper combosHelper)
+        public InventoriesController(DataContext context, ICombosHelper combosHelper, IFlashMessage flashMessage)
         {
             _context = context;
             _combosHelper = combosHelper;
+            _flashMessage = flashMessage;
         }
 
         public async Task<IActionResult> Index()
@@ -85,7 +90,8 @@ namespace Produccion.Controllers
             return View(InventoryDetails);
         }
 
-        public async Task<IActionResult> AddInventory()
+        [NoDirectAccess]
+        public async Task<IActionResult> AddOrEdit(int id)
         {
             InventoryViewModel model = new()
             {
@@ -94,31 +100,122 @@ namespace Produccion.Controllers
                 RawMaterials = await _combosHelper.GetComboRawMaterialsAsync(0),
                 Cantidad = 0
             };
-            return View(model);
+            if (id == 0)
+            {
+                return View(model);
+            }
+            else
+            {
+                Inventory inventory = await _context.Inventories
+                .Include(r => r.RawMaterial)
+                .ThenInclude(i => i.Color)
+                .Include(i => i.RawMaterial)
+                .ThenInclude(r => r.Fabric)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+                model = new()
+                {
+                    Id = inventory.Id,
+                    Colors = await _combosHelper.GetComboColorsAsync(),
+                    ColorId = inventory.RawMaterial.Color.Id,
+                    Fabrics = await _combosHelper.GetComboFabricsAsync(),
+                    FabricId = inventory.RawMaterial.Fabric.Id,
+                    RawMaterials = await _combosHelper.GetComboRawMaterialsAsync(),
+                    RawMaterialId = inventory.RawMaterial.Id,
+                    Cantidad = inventory.Cantidad
+                };
+
+                return View(model);
+            }
+
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddInventory(InventoryViewModel model)
+        public async Task<IActionResult> AddOrEdit(int id, InventoryViewModel model)
         {
-
             if (ModelState.IsValid)
             {
-                Inventory inventory = new()
+                try
                 {
-                    RawMaterial = await _context.RawMaterials
-                    .Include(r => r.Color)
-                    .Include(r => r.Fabric)
-                    .FirstOrDefaultAsync(r => r.Id == model.RawMaterialId),
-                    Cantidad = model.Cantidad,
-                    Existencia = model.Cantidad
-                };
-                _context.Add(inventory);
-                await _context.SaveChangesAsync();
+                    if (id == 0)
+                    {
+                        Inventory inventory = new()
+                        {
+                            RawMaterial = await _context.RawMaterials
+                                            .Include(r => r.Color)
+                                            .Include(r => r.Fabric)
+                                            .FirstOrDefaultAsync(r => r.Id == model.RawMaterialId),
+                            Cantidad = model.Cantidad,
+                            Existencia = model.Cantidad
+                        };
+                        _context.Add(inventory);
+                        await _context.SaveChangesAsync();
+                        _flashMessage.Info("Registro creado");
+                    }
+                    else
+                    {
+                        Inventory inventory = new()
+                        {
+                            Id = model.Id,
+                            RawMaterial = await _context.RawMaterials
+                                            .Include(r => r.Color)
+                                            .Include(r => r.Fabric)
+                                            .FirstOrDefaultAsync(r => r.Id == model.RawMaterialId),
+                            Cantidad = model.Cantidad,                            
+                        };
+                        _context.Update(inventory);
+                        await _context.SaveChangesAsync();
+                        _flashMessage.Info("Registro actualizado");
+                    }
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        _flashMessage.Danger("Ya existe un registro con el mismo nombre.");
+                    }
+                    else
+                    {
+                        _flashMessage.Danger(dbUpdateException.InnerException.Message);
+                    }
+                    return View(model);
+                }
+                catch (Exception exception)
+                {
+                    _flashMessage.Danger(exception.Message);
+                    return View(model);
+                }
+                model.Colors = await _combosHelper.GetComboColorsAsync();
+                model.Fabrics = await _combosHelper.GetComboFabricsAsync();
+                model.RawMaterials = await _combosHelper.GetComboRawMaterialsAsync();
                 return RedirectToAction(nameof(Index));
             }
-            model.RawMaterials = await _combosHelper.GetComboRawMaterialsAsync(0);
+
             return View(model);
+
+        }
+
+        [Authorize(Roles = "Admin")]
+        [NoDirectAccess]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            Inventory inventory = await _context.Inventories
+                .Include(r => r.RawMaterial)
+                .FirstOrDefaultAsync(r => r.Id == id);
+            try
+            {
+                _context.Inventories.Remove(inventory);
+                await _context.SaveChangesAsync();
+                _flashMessage.Info("Registro borrado.");
+
+            }
+            catch
+            {
+                _flashMessage.Danger("No se puede borrar el registro porque tiene datos relacionados.");
+
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         public JsonResult GetRawMaterialColor(int colorId)
